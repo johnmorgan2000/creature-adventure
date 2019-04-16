@@ -5,9 +5,13 @@ import React, { Component } from "react";
 export class GameWindow extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
             phase: "startMenu"
         };
+        
+        this.changeGamePhase = this.changeGameState.bind(this);
+        this.startBtnClickHandler = this.startBtnClickHandler.bind(this);
     }
     render() {
         switch (this.state.phase) {
@@ -15,7 +19,7 @@ export class GameWindow extends Component {
             case "startMenu":
                 return this.returnStartMenuRender();
             case "creatureSelect":
-                return;
+                return this.returnCreatureSelectRender();
             // default for no matches if something were to happen
             default:
                 return (
@@ -26,13 +30,24 @@ export class GameWindow extends Component {
         }
     }
 
+    changeGamePhase(stateName){
+        this.setState({
+            phase: stateName
+        })
+    }
+
     // creates the starting menu render
     returnStartMenuRender(){
         return (
             <div id="gameWindow">
-                <p class="startMenu">Welcoming words</p>
-                <button class="startMenu">Start</button>
-                <button class="startMenu">Help</button>
+                <p className="startMenu">Welcoming words</p>
+                <button 
+                onClick={this.startBtnClickHandler}
+                className="startMenu"
+                >
+                Start
+                </button>
+                <button className="startMenu">Help</button>
             </div>
         );
     }
@@ -43,6 +58,10 @@ export class GameWindow extends Component {
                 <p>Creature Select</p>
             </div>
         )
+    }
+
+    startBtnClickHandler(){
+        this.changeGamePhase("creatureSelect")
     }
 
 }
