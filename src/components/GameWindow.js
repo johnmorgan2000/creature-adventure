@@ -10,7 +10,7 @@ export class GameWindow extends Component {
             phase: "startMenu"
         };
         
-        this.changeGamePhase = this.changeGameState.bind(this);
+        this.changeGamePhase = this.changeGamePhase.bind(this);
         this.startBtnClickHandler = this.startBtnClickHandler.bind(this);
     }
     render() {
