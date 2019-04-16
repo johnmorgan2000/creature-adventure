@@ -1,10 +1,13 @@
 import React, { Component } from "react";
+import {CREATS} from "../creatures"
+import {CreatureSelectScreen} from "./CreatureSelectScreen";
 
 // Component to contain the game happening inside the app
 // GameWindow will handle most of the game state and game play
 export class GameWindow extends Component {
     constructor(props) {
         super(props);
+        this.creatures = CREATS;
 
         this.state = {
             phase: "startMenu"
@@ -30,6 +33,7 @@ export class GameWindow extends Component {
         }
     }
 
+    // changes the game phase 
     changeGamePhase(stateName){
         this.setState({
             phase: stateName
@@ -55,11 +59,12 @@ export class GameWindow extends Component {
     returnCreatureSelectRender(){
         return (
             <div id="gameWindow">
-                <p>Creature Select</p>
+                <CreatureSelectScreen creatures={this.creatures}/>
             </div>
         )
     }
 
+    // start button on start menu handler
     startBtnClickHandler(){
         this.changeGamePhase("creatureSelect")
     }
