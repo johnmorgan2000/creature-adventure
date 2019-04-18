@@ -24,3 +24,18 @@
   margin: 0 auto;
   margin-bottom: 5px;
 }
+
+
+/* CreatureSelector  Component styling */
+div.creatureSelect {
+  display: inline-block;
+  margin:2px;
+  width: 55px;
+  height: 55px;
+  border: 1px solid black;
+}
+
+
+div.creatureSelect.active {
+  border: 2px solid lightblue;
+}
