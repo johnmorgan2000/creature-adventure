@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import {CREATS} from "../creatures"
-import {CreatureSelectScreen} from "./CreatureSelectScreen";
+import { CREATS } from "../creatures";
+import { CreatureSelectScreen } from "./CreatureSelectScreen";
 
 // Component to contain the game happening inside the app
 // GameWindow will handle most of the game state and game play
@@ -10,11 +10,13 @@ export class GameWindow extends Component {
         this.creatures = CREATS;
 
         this.state = {
-            phase: "startMenu"
+            phase: "startMenu",
+            playerCreatureId: 1
         };
-        
+
         this.changeGamePhase = this.changeGamePhase.bind(this);
         this.startBtnClickHandler = this.startBtnClickHandler.bind(this);
+        this.toggleCreatureSelect = this.toggleCreatureSelect.bind(this);
     }
     render() {
         switch (this.state.phase) {
@@ -33,40 +35,49 @@ export class GameWindow extends Component {
         }
     }
 
-    // changes the game phase 
-    changeGamePhase(stateName){
+    // changes the game phase
+    changeGamePhase(stateName) {
         this.setState({
             phase: stateName
-        })
+        });
     }
 
     // creates the starting menu render
-    returnStartMenuRender(){
+    returnStartMenuRender() {
         return (
             <div id="gameWindow">
                 <p className="startMenu">Welcoming words</p>
-                <button 
-                onClick={this.startBtnClickHandler}
-                className="startMenu"
+                <button
+                    onClick={this.startBtnClickHandler}
+                    className="startMenu"
                 >
-                Start
+                    Start
                 </button>
                 <button className="startMenu">Help</button>
             </div>
         );
     }
     // creates the creature select render
-    returnCreatureSelectRender(){
+    returnCreatureSelectRender() {
         return (
             <div id="gameWindow">
-                <CreatureSelectScreen creatures={this.creatures}/>
+                <CreatureSelectScreen
+                    toggleCreatureSelect={this.toggleCreatureSelect}
+                    playerCreatureId={this.state.playerCreatureId}
+                    creatures={this.creatures}
+                />
             </div>
-        )
+        );
+    }
+
+    toggleCreatureSelect(id) {
+        this.setState({
+            playerCreatureId: id
+        });
     }
 
     // start button on start menu handler
-    startBtnClickHandler(){
-        this.changeGamePhase("creatureSelect")
+    startBtnClickHandler() {
+        this.changeGamePhase("creatureSelect");
     }
-
 }
