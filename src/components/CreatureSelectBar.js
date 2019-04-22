@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { CreatureSelector } from "./CreatureSelector";
 
 export class CreatureSelectBar extends Component {
-
     render() {
         return (
             <div id="creatureSelectBar">
@@ -12,11 +11,9 @@ export class CreatureSelectBar extends Component {
                         creatureObj={creat.creatureObj}
                         key={key}
                         playerCreatureId={this.props.playerCreatureId}
-                        onClick={() => this.props.toggleCreatureSelect(creat.id)}
-
+                        onClick={() => this.props.toggleCreatureSelect(creat.id, creat.creatureObj)}
                     />
                 ))}
-    
             </div>
         );
     }
