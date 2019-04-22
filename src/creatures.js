@@ -20,9 +20,16 @@ class Creature {
     }
 }
 
+class BoulderBack extends Creature {
+    constructor(){
+        super();
+        this.name = "Boulder Back";
+    }
+}
+
 // list of created Creatures
 export const CREATS = [
     { id: 1, creatureObj: new Creature() },
-    { id: 2, creatureObj: new Creature() },
+    { id: 2, creatureObj: new BoulderBack() },
     { id: 3, creatureObj: new Creature() }
 ];
