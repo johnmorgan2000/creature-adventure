@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { CREATS } from "../creatures";
 import { CreatureSelectScreen } from "./CreatureSelectScreen";
+import { FightWavesScreen } from "./FightWavesScreen";
 
 // Component to contain the game happening inside the app
 // GameWindow will handle most of the game state and game play
@@ -27,6 +28,8 @@ export class GameWindow extends Component {
                 return this.returnStartMenuRender();
             case "creatureSelect":
                 return this.returnCreatureSelectRender();
+            case "fightWavesScreen":
+                return this.returnFightWavesRender();
             // default for no matches if something were to happen
             default:
                 return (
@@ -68,11 +71,22 @@ export class GameWindow extends Component {
                     toggleCreatureSelect={this.toggleCreatureSelect}
                     playerCreatureId={this.state.playerCreatureId}
                     creatures={this.creatures}
+                    changeGamePhase={this.changeGamePhase}
                 />
             </div>
         );
     }
 
+    returnFightWavesRender(){
+        return(
+            <div id="gameWindow">
+                <FightWavesScreen playerCreature={this.state.creatureObj} creatures={this.creatures}/>
+            </div>
+        )
+    }
+
+    
+    // changes the state of playerCreatureId and creatureObj
     toggleCreatureSelect(id, creatureObj) {
         this.setState({
             playerCreatureId: id,
