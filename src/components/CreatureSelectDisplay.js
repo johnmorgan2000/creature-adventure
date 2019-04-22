@@ -4,12 +4,11 @@ import React, { Component } from "react";
 export class CreatureSelectDisplay extends Component {
     constructor(props){
         super(props);
-        this.creatureObj = this.props.creatureObj
     }
     render() {
         return (
             <div className="creatureSelectDisplay">
-                <p>{this.creatureObj.name}</p>
+                <p>{this.props.creatureObj.name}</p>
             </div>
         );
     }
