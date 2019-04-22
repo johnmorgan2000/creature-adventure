@@ -11,12 +11,14 @@ export class GameWindow extends Component {
 
         this.state = {
             phase: "startMenu",
-            playerCreatureId: 1
+            playerCreatureId: 1,
+            creatureObj: this.creatures[0].creatureObj
         };
 
         this.changeGamePhase = this.changeGamePhase.bind(this);
         this.startBtnClickHandler = this.startBtnClickHandler.bind(this);
         this.toggleCreatureSelect = this.toggleCreatureSelect.bind(this);
+        
     }
     render() {
         switch (this.state.phase) {
@@ -62,6 +64,7 @@ export class GameWindow extends Component {
         return (
             <div id="gameWindow">
                 <CreatureSelectScreen
+                    creatureObj={this.state.creatureObj}
                     toggleCreatureSelect={this.toggleCreatureSelect}
                     playerCreatureId={this.state.playerCreatureId}
                     creatures={this.creatures}
@@ -70,9 +73,10 @@ export class GameWindow extends Component {
         );
     }
 
-    toggleCreatureSelect(id) {
+    toggleCreatureSelect(id, creatureObj) {
         this.setState({
-            playerCreatureId: id
+            playerCreatureId: id,
+            creatureObj: creatureObj
         });
     }
 
