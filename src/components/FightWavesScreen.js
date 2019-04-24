@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { AST_DefClass } from "terser";
 
 // The component responsible for the fighting game play
 export class FightWavesScreen extends Component {
@@ -10,10 +11,13 @@ export class FightWavesScreen extends Component {
             enemyCreature: this.returnRandomCreature(),
             counter: 1,
             isAttacking: true,
-            counterDirection: 1
+            counterDirection: 1,
+            displayDamageDone: false
+            
         };
 
         // global variables
+        this.attackMeterPointRef = React.createRef();
         this.meterTickInterval = null;
         this.playerAtkDamage = 0;
 
@@ -61,15 +65,28 @@ export class FightWavesScreen extends Component {
                 {this.creatureDisplayBlock()}
 
                 <div id="bottomAttackBar">
-                    <div id="attackMeter">
-                        <div className="meterPoint" />
+                    <div id="attackMeter" >
+                        <div className="meterPoint" ref={this.attackMeterPointRef}/>
                     </div>
-                    <button onClick={() => this.stopTicker()}>
+                    {this.returnDamageDoneBlock()}
+
+                    <button onClick={() => this.hitBtnClickHandler()}>
                         Hit
                     </button>
                 </div>
             </div>
         );
+    }
+
+    returnDamageDoneBlock(){
+        if(this.state.displayDamageDone){
+            return(
+            <div>
+                <p>You did {this.playerAtkDamage} Damage!</p>
+            </div>
+            )
+        }
+        
     }
 
     // returns the players turn change of screen
@@ -91,7 +108,7 @@ export class FightWavesScreen extends Component {
 
     // starts the meterTickInterval
     startTicker(){
-        this.meterTickInterval = setInterval(this.meterTickIntervalHandler, 1000);
+        this.meterTickInterval = setInterval(this.meterTickIntervalHandler, 10);
     }
 
     // stops the meterTickInterval
@@ -116,7 +133,7 @@ export class FightWavesScreen extends Component {
 
     getNewPlayerAttackDamage(){
         var counter = this.state.counter;
-        var playerDamage = this.playerCreature.attackDmg;
+        var playerDamage = this.state.playerCreature.attackDmg;
         this.playerAtkDamage = playerDamage * (counter / 100);
     }
 
@@ -132,6 +149,17 @@ export class FightWavesScreen extends Component {
         this.startTicker();
     }
 
+    hitBtnClickHandler(){
+        this.stopTicker();
+        this.getNewPlayerAttackDamage();
+        this.setState({
+            displayDamageDone: true
+        })
+        setTimeout(()=>{this.setState({displayDamageDone: false})}, 2000);
+        this.stopTicker()
+        
+    }
+
     meterTickIntervalHandler() {
         if (this.state.counter > 0 && this.state.counter < 100) {
             this.setState({
@@ -144,7 +172,9 @@ export class FightWavesScreen extends Component {
                 counterDirection: this.state.counterDirection * -1
             })
         }
-        console.log(this.state.counter);
+
+        // moves the meter point
+        this.attackMeterPointRef.current.style["left"] = this.state.counter + "%";
     }
 
     getNewCounter(){
