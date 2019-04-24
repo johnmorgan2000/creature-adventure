@@ -86,7 +86,6 @@ export class FightWavesScreen extends Component {
             </div>
             )
         }
-        
     }
 
     // returns the players turn change of screen
@@ -144,6 +143,25 @@ export class FightWavesScreen extends Component {
         });
     }
 
+    // sets the new creat obj by giving the method a string of 
+    // either "player" or "enemy" to apply given damage
+    applyDamage(strPlayerOrEnemy, damage){
+        if (strPlayerOrEnemy === "player"){
+            this.state.playerCreature.health -= damage;
+            this.setState({
+                playerCreature: this.state.playerCreature
+            })
+        }
+        else if (strPlayerOrEnemy === "enemy"){
+            this.state.enemyCreature.health -= damage;
+            this.setState({
+                enemyCreature: this.state.enemyCreature
+            })
+        }
+    }
+
+    // --start of handlers section--
+
     baseAtkClickHandler() {
         this.changeToAttackPhase();
         this.startTicker();
@@ -155,9 +173,11 @@ export class FightWavesScreen extends Component {
         this.setState({
             displayDamageDone: true
         })
-        setTimeout(()=>{this.setState({displayDamageDone: false})}, 2000);
+
         this.stopTicker()
-        
+        this.applyDamage("enemy", this.playerAtkDamage);
+        setTimeout(()=>{this.setState({displayDamageDone: false})}, 2000);
+  
     }
 
     meterTickIntervalHandler() {
@@ -176,7 +196,10 @@ export class FightWavesScreen extends Component {
         // moves the meter point
         this.attackMeterPointRef.current.style["left"] = this.state.counter + "%";
     }
+    // --end of aforementioned handlers section--
 
+
+    // returns a counter thats not over 99 or equal to 0 
     getNewCounter(){
         var newCounter;
             if (this.state.counter === 0){
