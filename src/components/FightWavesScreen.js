@@ -8,21 +8,25 @@ export class FightWavesScreen extends Component {
             battlePhase: "playersTurn",
             playerCreature: this.props.playerCreature,
             enemyCreature: this.returnRandomCreature(),
-            isAttacking: false,
             counter: 1,
+            isAttacking: true,
             counterDirection: 1
         };
 
-        this.meterTickInterval = () =>
-            setInterval(this.meterTickIntervalHandler, 1000);
+        // global variables
+        this.meterTickInterval = null;
         this.playerAtkDamage = 0;
+
+        // bindings
         this.meterTickIntervalHandler = this.meterTickIntervalHandler.bind(
             this
         );
-        // this.determinePlayerDamage = this.determinePlayerDamage.bind(this);
+        
         this.changeToAttackPhase = this.changeToAttackPhase.bind(this);
         
     }
+
+    // main render method
     render() {
         switch (this.state.battlePhase) {
             case "playersTurn":
@@ -32,21 +36,8 @@ export class FightWavesScreen extends Component {
         }
     }
 
-    changeToAttackPhase() {
-        console.log(this.state.isAttacking);
-        this.setState({
-            battlePhase: "attackPhase",
-            isAttacking: true
-        });
-    }
-
-    returnRandomCreature() {
-        return this.props.creatures[
-            Math.floor(Math.random() * this.props.creatures.length)
-        ].creatureObj;
-    }
-
     // possibly another component later
+    // a block of code to display the creatures screen
     creatureDisplayBlock() {
         return (
             <div>
@@ -63,6 +54,25 @@ export class FightWavesScreen extends Component {
         );
     }
 
+    // returns the attack phase render block
+    returnAttackPhaseRender() {
+        return (
+            <div id="fightWavesScreen">
+                {this.creatureDisplayBlock()}
+
+                <div id="bottomAttackBar">
+                    <div id="attackMeter">
+                        <div className="meterPoint" />
+                    </div>
+                    <button onClick={() => this.stopTicker()}>
+                        Hit
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+    // returns the players turn change of screen
     returnPlayersTurnRender() {
         return (
             <div id="fightWavesScreen">
@@ -79,6 +89,38 @@ export class FightWavesScreen extends Component {
         );
     }
 
+    // starts the meterTickInterval
+    startTicker(){
+        this.meterTickInterval = setInterval(this.meterTickIntervalHandler, 1000);
+    }
+
+    // stops the meterTickInterval
+    stopTicker(){
+        clearInterval(this.meterTickInterval);
+    }
+
+    // changes the battlePhase in state to "attackPhase"
+    changeToAttackPhase() {
+        this.setState({
+            battlePhase: "attackPhase",
+            isAttacking: true
+        });
+    }
+
+    // returns a random creature obj
+    returnRandomCreature() {
+        return this.props.creatures[
+            Math.floor(Math.random() * this.props.creatures.length)
+        ].creatureObj;
+    }
+
+    getNewPlayerAttackDamage(){
+        var counter = this.state.counter;
+        var playerDamage = this.playerCreature.attackDmg;
+        this.playerAtkDamage = playerDamage * (counter / 100);
+    }
+
+    // changes the isAttacking state to the either true or false
     toggleIsAttacking() {
         this.setState({
             isAttacking: !this.state.isAttacking
@@ -87,7 +129,7 @@ export class FightWavesScreen extends Component {
 
     baseAtkClickHandler() {
         this.changeToAttackPhase();
-        this.meterTickInterval();
+        this.startTicker();
     }
 
     meterTickIntervalHandler() {
@@ -96,37 +138,24 @@ export class FightWavesScreen extends Component {
                 counter: (this.state.counter + this.state.counterDirection)
             });
         }else{
-            var newCounter;
+            var newCounter = this.getNewCounter();
+            this.setState({
+                counter: newCounter,
+                counterDirection: this.state.counterDirection * -1
+            })
+        }
+        console.log(this.state.counter);
+    }
+
+    getNewCounter(){
+        var newCounter;
             if (this.state.counter === 0){
                 newCounter = 1;
             }
             else{
                 newCounter = 99;
             }
-            this.setState({
-                counter: newCounter,
-                counterDirection: this.state.counterDirection * -1
-            })
-        }
-
-        console.log(this.state.counter);
+        return newCounter;
     }
 
-
-    returnAttackPhaseRender() {
-        return (
-            <div id="fightWavesScreen">
-                {this.creatureDisplayBlock()}
-
-                <div id="bottomAttackBar">
-                    <div id="attackMeter">
-                        <div className="meterPoint" />
-                    </div>
-                    <button onClick={() => this.toggleIsAttacking()}>
-                        Hit
-                    </button>
-                </div>
-            </div>
-        );
-    }
 }
