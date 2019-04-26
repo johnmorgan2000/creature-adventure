@@ -6,6 +6,7 @@ class Creature {
         this.mana = 100;
         this.element = "no element";
         this.attackDmg = 10;
+        this.focus = 80;
 
         this.levelUpValues = {
             healthUp: 1,
