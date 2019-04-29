@@ -2,11 +2,11 @@
 class Creature {
     constructor() {
         this.name = "Default";
-        this.health = 100;
+        this.health = 1000;
         this.mana = 100;
         this.element = "no element";
-        this.attackDmg = 10;
-        this.focus = 80;
+        this.attackDmg = 100;
+        this.focus = 70;
 
         this.levelUpValues = {
             healthUp: 1,
