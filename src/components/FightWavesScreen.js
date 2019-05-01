@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-
+import { BattleLog } from "./BattleLog";
+import { HealthBar } from "./HealthBar";
 // file search tags are here for me to navigate the file easier
 // and leave tags for coming back to later or finding a section of code
 
@@ -21,18 +22,21 @@ export class FightWavesScreen extends Component {
             counter: 1,
             isAttacking: true,
             counterDirection: 1,
-            displayDamageDone: false
+            displayDamageDone: false,
+            battleLog: []
         };
 
         // references
         this.meterPointRef = React.createRef();
         this.meterStopperBtnRef = React.createRef();
+        this.playerHealthRef = React.createRef();
+        this.enemyHealthRef = React.createRef();
 
         // other global variables
         this.meterTickInterval = null;
         this.playerAtkDamage = 0;
         this.enemyAtkDamage = 0;
-        this.blockAttack= false;
+        this.blockAttack = false;
 
         // bindings
         this.meterTickIntervalHandler = this.meterTickIntervalHandler.bind(
@@ -60,15 +64,26 @@ export class FightWavesScreen extends Component {
     // a block of code to display the creatures screen
     creatureDisplayBlock() {
         return (
-            <div>
-                <div>
+            <div className="creatureDisplayBlock">
+                <div className="displayBlock player">
+                    <HealthBar
+                        createdRef={this.playerHealthRef}
+                        currentHealth={this.state.playerCreature.health}
+                        maxHealth={1000}
+                    />
                     <p>{this.state.playerCreature.name}</p>
-                    <p>{this.state.playerCreature.health}</p>
+
+                    <img src={this.state.playerCreature.imageSrc} alt=""/>
                 </div>
 
-                <div>
+                <div className="displayBlock enemy">
+                    <HealthBar
+                        createdRef={this.enemyHealthRef}
+                        currentHealth={this.state.enemyCreature.health}
+                        maxHealth={1000}
+                    />
                     <p>{this.state.enemyCreature.name}</p>
-                    <p>{this.state.enemyCreature.health}</p>
+                    <img src={this.state.enemyCreature.imageSrc} alt=""/>
                 </div>
             </div>
         );
@@ -78,17 +93,23 @@ export class FightWavesScreen extends Component {
     returnAttackPhaseRender() {
         return (
             <div id="fightWavesScreen">
+                <div>
+                    <p>Player's Turn</p>
+                </div>
                 {this.creatureDisplayBlock()}
 
-                <div id="bottomAttackBar">
+                <BattleLog battleLog={this.state.battleLog} />
+
+                <div className="bottomMeterContainer">
+                    <p>Attacking</p>
                     <div className="attackMeter meter">
                         <div className="meterPoint" ref={this.meterPointRef} />
                     </div>
-                    {this.returnDamageDoneBlock()}
 
-                    <button 
-                    ref={this.meterStopperBtnRef}
-                    onClick={() => this.hitBtnClickHandler()}>
+                    <button
+                        ref={this.meterStopperBtnRef}
+                        onClick={() => this.hitBtnClickHandler()}
+                    >
                         Stop
                     </button>
                 </div>
@@ -111,7 +132,9 @@ export class FightWavesScreen extends Component {
     returnPlayersTurnRender() {
         return (
             <div id="fightWavesScreen">
-                <p>Fight Screen</p>
+                <div>
+                    <p>Player's Turn</p>
+                </div>
 
                 {this.creatureDisplayBlock()}
 
@@ -128,14 +151,29 @@ export class FightWavesScreen extends Component {
         if (this.state.isAttacking === true) {
             return (
                 <div id="fightWavesScreen">
+                    <div>
+                        <p>Opponent's Turn</p>
+                    </div>
                     {this.creatureDisplayBlock()}
 
-                    <div className="defendMeter meter">
-                        <div className="meterPoint" ref={this.meterPointRef} />
+                    <BattleLog battleLog={this.state.battleLog} />
+
+                    <div className="bottomMeterContainer">
+                        <p>Block</p>
+                        <div className="defendMeter meter">
+                            <div
+                                className="meterPoint"
+                                ref={this.meterPointRef}
+                            />
+                        </div>
+
+                        <button
+                            ref={this.meterStopperBtnRef}
+                            onClick={() => this.blockBtnClickHandler()}
+                        >
+                            Stop
+                        </button>
                     </div>
-                    <button 
-                    ref = {this.meterStopperBtnRef}
-                    onClick={()=> this.blockBtnClickHandler()}>Stop</button>
                 </div>
             );
         } else {
@@ -157,6 +195,18 @@ export class FightWavesScreen extends Component {
     // stops the meterTickInterval
     stopTicker() {
         clearInterval(this.meterTickInterval);
+    }
+
+    addToBattleLog(entry) {
+        var log = this.state.battleLog;
+        log.push(entry);
+        if (log.length > 3) {
+            log.shift();
+        }
+
+        this.setState({
+            battleLog: log
+        });
     }
 
     // resets the counter in the state
@@ -187,66 +237,74 @@ export class FightWavesScreen extends Component {
 
     // returns a random creature obj
     returnRandomCreature() {
-        return Object.assign(
-            {},
-            this.props.creatures[
-                Math.floor(Math.random() * this.props.creatures.length)
-            ].creatureObj
-        );
+        const randCreat = this.props.creatures[
+            Math.floor(Math.random() * this.props.creatures.length)
+        ].creatureObj;
+
+        return Object.assign({ __proto__: randCreat.__proto__ }, randCreat);
+        
     }
 
     // -file search tag- DRY
     // Violates the Don't Repeat Yourself rule
     getNewPlayerAttackDamage() {
-        if (this.blockAttack){
+        if (this.blockAttack === false) {
             var counter = this.state.counter;
             var playerDamage = this.state.playerCreature.attackDmg;
-            this.playerAtkDamage = playerDamage * (counter / 100);
-        }else{
+            this.playerAtkDamage = Math.floor(playerDamage * (counter / 100));
+            this.addToBattleLog("You attacked for " + this.playerAtkDamage);
+        } else {
             this.playerAtkDamage = 0;
+            this.addToBattleLog("Your attack was blocked");
         }
-        
     }
 
     // -file search tag- DRY
     // Violates the Don't Repeat Yourself rule
-    getNewEnemyAttackDamage(){
-        if (this.blockAttack){
-            var counter = this.state.counter;
-            var playerDamage = this.state.enemyCreature.attackDmg;
-            this.enemyAtkDamage = playerDamage * (counter / 100);
-        }else{
+    getNewEnemyAttackDamage() {
+        if (this.blockAttack === false) {
+            var counter = this.randomEnemyCounter();
+            var enemyDamage = this.state.enemyCreature.attackDmg;
+            this.enemyAtkDamage = Math.floor(enemyDamage * (counter / 100));
+            this.addToBattleLog(
+                "Your Opponent attacked for " + this.enemyAtkDamage
+            );
+        } else {
             this.enemyAtkDamage = 0;
+            this.addToBattleLog("You blocked the attack");
         }
-        
     }
 
     // simulates the player's ability to stop the counter
-    randomEnemyCounter(){
-        return Math.random() * (100 - this.state.enemyCreature.focus) + this.state.enemyCreature.focus;
+    randomEnemyCounter() {
+        return (
+            Math.random() * (100 - this.state.enemyCreature.focus) +
+            this.state.enemyCreature.focus
+        );
     }
 
     // takes the counter and turns it into a block percentage
     // takes in "player" or "enemy" to determine the calculations needed.
-    calculateBlockFromCounter(stringFor){
+    calculateBlockFromCounter(stringFor) {
         var distFrom50;
-        switch (this.state.counter) {
+        switch (stringFor) {
             case "player":
-                distFrom50 = this.state.counter;
-            case "enemy":
                 distFrom50 = Math.abs(50 - this.state.counter);
+                break;
+            case "enemy":
+                distFrom50 = Math.abs(100 - this.randomEnemyCounter());
+                break;
             default:
-                distFrom50 = this.state.counter;
+                distFrom50 = Math.abs(50 - this.state.counter);
+                break;
         }
-        if (distFrom50 !== 0 || distFrom50 > 10){
-            this.blockAttack = false;
-        }else{
-            this.blockAttack = true;
-        }
-        
-        
-    }
 
+        if (distFrom50 === 0 || distFrom50 <= 10) {
+            this.blockAttack = true;
+        } else {
+            this.blockAttack = false;
+        }
+    }
 
     // changes the isAttacking state to the either true or false
     toggleIsAttacking() {
@@ -258,18 +316,25 @@ export class FightWavesScreen extends Component {
     // sets the new creat obj by giving the method a string of
     // either "player" or "enemy" to apply given damage
     applyDamage(strPlayerOrEnemy, damage) {
-        damage = damage - (damage * this.blockPercentage())
+        var newCreat;
         if (strPlayerOrEnemy === "player") {
-            this.state.playerCreature.health -= damage;
+            newCreat = this.state.playerCreature
+            newCreat.setHealth(newCreat.health - damage);
             this.setState({
-                playerCreature: this.state.playerCreature
+                playerCreature: newCreat
             });
         } else if (strPlayerOrEnemy === "enemy") {
-            this.state.enemyCreature.health -= damage;
+            newCreat = this.state.enemyCreature
+            newCreat.setHealth(newCreat.health - damage);
             this.setState({
-                enemyCreature: this.state.enemyCreature
+                enemyCreature: newCreat
             });
         }
+    }
+
+    updateHealthBarDisplay(progressElement, currentHealth, maxHealth) {
+        progressElement.style.width =
+            Math.floor((currentHealth / maxHealth) * 100) + "%";
     }
 
     // determines what the enemy will do
@@ -288,7 +353,7 @@ export class FightWavesScreen extends Component {
     }
 
     // adds disabled to the element to the stopper btn
-    disabler(){
+    disabler() {
         this.meterStopperBtnRef.current.setAttribute("disabled", true);
     }
 
@@ -298,6 +363,8 @@ export class FightWavesScreen extends Component {
     hitBtnClickHandler() {
         this.disabler();
         this.stopTicker();
+
+        this.calculateBlockFromCounter("enemy");
         this.getNewPlayerAttackDamage();
         this.setState({
             displayDamageDone: true
@@ -305,12 +372,18 @@ export class FightWavesScreen extends Component {
         this.stopTicker();
 
         this.applyDamage("enemy", this.playerAtkDamage);
+        this.updateHealthBarDisplay(
+            this.enemyHealthRef.current,
+            this.state.enemyCreature.health,
+
+            1000
+        );
 
         this.resetCounter();
         this.toggleIsAttacking();
 
         // gives time to show whats happening
-        // might turn the timeout into a setting adjustable 
+        // might turn the timeout into a setting adjustable
         // by the user
         setTimeout(() => {
             this.setState({
@@ -321,13 +394,14 @@ export class FightWavesScreen extends Component {
         }, 2000);
     }
 
-
     // handles the series of actions to happen after the enemy hits
     // sorry for the sloppiness, plan to clean it up if time allows
     // -file search tag- clean
-    blockBtnClickHandler(){
+    blockBtnClickHandler() {
         this.disabler();
         this.stopTicker();
+
+        this.calculateBlockFromCounter("player");
         this.getNewEnemyAttackDamage();
         this.setState({
             displayDamageDone: true
@@ -335,11 +409,15 @@ export class FightWavesScreen extends Component {
 
         this.stopTicker();
         this.applyDamage("player", this.enemyAtkDamage);
+        this.updateHealthBarDisplay(
+            this.playerHealthRef.current,
+            this.state.playerCreature.health,
+            1000
+        );
         this.resetCounter();
 
-        
         // gives time to show whats happening
-        // might turn the timeout into a setting adjustable 
+        // might turn the timeout into a setting adjustable
         // by the user
 
         setTimeout(() => {
@@ -349,7 +427,6 @@ export class FightWavesScreen extends Component {
             });
             this.toggleIsAttacking();
         }, 2000);
-        
     }
 
     meterTickIntervalHandler() {
@@ -369,4 +446,9 @@ export class FightWavesScreen extends Component {
         this.meterPointRef.current.style["left"] = this.state.counter + "%";
     }
     // --end handlers--
+
+    // utils
+    // deepCopy(val) {
+    //     return Object.assign( Object.create(val), JSON.parse( JSON.stringify(val) ));
+    // }
 }
