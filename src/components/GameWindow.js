@@ -13,7 +13,7 @@ export class GameWindow extends Component {
         this.state = {
             phase: "startMenu",
             playerCreatureId: 1,
-            creatureObj: this.creatures[0].creatureObj
+            creatureObj:  this.creatures[0].creatureObj
         };
 
         this.changeGamePhase = this.changeGamePhase.bind(this);
@@ -51,14 +51,14 @@ export class GameWindow extends Component {
     returnStartMenuRender() {
         return (
             <div id="gameWindow">
-                <p className="startMenu">Welcoming words</p>
+                <p className="startMenu title">Game Name or Something</p>
                 <button
                     onClick={this.startBtnClickHandler}
-                    className="startMenu"
+                    className="startMenu mainBtn"
                 >
                     Start
                 </button>
-                <button className="startMenu">Help</button>
+                <button className="startMenu mainBtn">Help</button>
             </div>
         );
     }
@@ -80,7 +80,11 @@ export class GameWindow extends Component {
     returnFightWavesRender(){
         return(
             <div id="gameWindow">
-                <FightWavesScreen playerCreature={this.state.creatureObj} creatures={this.creatures}/>
+                <FightWavesScreen 
+                    changeGamePhase={this.changeGamePhase} 
+                    playerCreature={this.state.creatureObj} 
+                    creatures={this.creatures}
+                />
             </div>
         )
     }
@@ -90,7 +94,7 @@ export class GameWindow extends Component {
     toggleCreatureSelect(id, creatureObj) {
         this.setState({
             playerCreatureId: id,
-            creatureObj: creatureObj
+            creatureObj:  creatureObj
         });
     }
 
