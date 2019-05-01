@@ -32,7 +32,10 @@ class Creature {
     setHealth(newHealth) {
         if (newHealth < 0) {
             this.health = 0;
-        } else {
+        }else if (newHealth > this.maxHealth){
+            this.health = this.maxHealth
+        } 
+        else {
             this.health = newHealth;
         }
     }
