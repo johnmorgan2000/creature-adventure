@@ -29,6 +29,7 @@ class Creature {
         };
     }
 
+    // setters
     setHealth(newHealth) {
         if (newHealth < 0) {
             this.health = 0;
@@ -38,6 +39,15 @@ class Creature {
         else {
             this.health = newHealth;
         }
+    }
+
+    // end setters
+
+    isDead(){
+        if (this.health <=0){
+            return true;
+        }
+        return false;
     }
 
     getCreatureToWaveLevel() {
