@@ -2,16 +2,51 @@
 class Creature {
     constructor() {
         this.name = "Default";
-        this.health = 1000;
-        this.mana = 100;
+
+        // health information
+        this.maxHealth = 1000;
+        this.health = this.maxHealth;
+
+        // mana information
+        this.maxMana = 100;
+        this.mana = this.maxMana;
+
+        // focus information
+        this.baseFocus = 70;
+        this.focus = this.baseFocus;
+        this.maxFocus = 100;
+        this.minFocus = 20;
+
         this.element = "no element";
         this.attackDmg = 100;
-        this.focus = 70;
+        this.imageSrc = "./images/default.png";
+        this.waveLevel = 1;
 
+        // leveling up information
         this.levelUpValues = {
             healthUp: 1,
             manaUp: 1
         };
+    }
+
+    setHealth(newHealth) {
+        if (newHealth < 0) {
+            this.health = 0;
+        } else {
+            this.health = newHealth;
+        }
+    }
+
+    getCreatureToWaveLevel() {
+        var values = this.levelUpValues;
+        this.health = values.healthUp * this.waveLevel;
+        this.mana = values.manaUp * this.waveLevel;
+    }
+
+    restoreAllValues() {
+        this.health = this.maxHealth;
+        this.mana = this.maxMana;
+        this.focus = this.baseFocus;
     }
 
     // levels the creature based on levelUpValues
@@ -23,9 +58,13 @@ class Creature {
 }
 
 class BoulderBack extends Creature {
-    constructor(){
+    constructor() {
         super();
         this.name = "Boulder Back";
+    }
+
+    copy() {
+        return new BoulderBack();
     }
 }
 
