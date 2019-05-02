@@ -45,7 +45,7 @@ export class FightWavesScreen extends Component {
         this.blockAttack = false;
         this.playThroughStats = {
             creature: this.state.playerCreature.name,
-            waves: this.state.waves
+            waves: this.state.wave
         };
 
         // bindings
@@ -374,6 +374,7 @@ export class FightWavesScreen extends Component {
 
     roundResultAction() {
         if (this.state.playerCreature.isDead()) {
+            this.props.setResults(this.playThroughStats);
             this.props.changeGamePhase("resultScreen");
         } else if (this.state.enemyCreature.isDead()) {
             this.setupNextWave();
@@ -410,6 +411,8 @@ export class FightWavesScreen extends Component {
             wave: this.state.wave + 1,
             battleLog: []
         });
+
+        this.playThroughStats.waves += 1;
     }
 
     // handles the series of actions to happen after the character hits
