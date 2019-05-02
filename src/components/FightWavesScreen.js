@@ -25,6 +25,10 @@ export class FightWavesScreen extends Component {
             displayDamageDone: false,
             wave: 1,
             battleLog: []
+            // disabled: {
+            //     baseAtkBtn: false,
+            //     stopBtn: fa
+            // }
         };
 
         // references
@@ -42,7 +46,7 @@ export class FightWavesScreen extends Component {
         this.playThroughStats = {
             creature: this.state.playerCreature.name,
             waves: this.state.waves
-        }
+        };
 
         // bindings
         this.meterTickIntervalHandler = this.meterTickIntervalHandler.bind(
@@ -75,7 +79,7 @@ export class FightWavesScreen extends Component {
                     <HealthBar
                         createdRef={this.playerHealthRef}
                         currentHealth={this.state.playerCreature.health}
-                        maxHealth={1000}
+                        maxHealth={this.state.playerCreature.maxHealth}
                     />
                     <p>{this.state.playerCreature.name}</p>
 
@@ -86,7 +90,7 @@ export class FightWavesScreen extends Component {
                     <HealthBar
                         createdRef={this.enemyHealthRef}
                         currentHealth={this.state.enemyCreature.health}
-                        maxHealth={1000}
+                        maxHealth={this.state.enemyCreature.maxHealth}
                     />
                     <p>{this.state.enemyCreature.name}</p>
                     <img src={this.state.enemyCreature.imageSrc} alt="" />
@@ -99,7 +103,7 @@ export class FightWavesScreen extends Component {
     returnAttackPhaseRender() {
         return (
             <div id="fightWavesScreen">
-                <div>
+                <div className="roundBanner">
                     <p>Player's Turn</p>
                 </div>
                 {this.creatureDisplayBlock()}
@@ -138,7 +142,7 @@ export class FightWavesScreen extends Component {
     returnPlayersTurnRender() {
         return (
             <div id="fightWavesScreen">
-                <div>
+                <div className="roundBanner">
                     <p>Player's Turn</p>
                 </div>
 
@@ -157,7 +161,7 @@ export class FightWavesScreen extends Component {
         if (this.state.isAttacking === true) {
             return (
                 <div id="fightWavesScreen">
-                    <div>
+                    <div className="roundBanner">
                         <p>Opponent's Turn</p>
                     </div>
                     {this.creatureDisplayBlock()}
@@ -337,7 +341,6 @@ export class FightWavesScreen extends Component {
         }
     }
 
-
     // determines what the enemy will do
     conductBotActions() {
         var action = "attack";
@@ -377,9 +380,13 @@ export class FightWavesScreen extends Component {
         }
     }
 
-    prepareCreatureForNewWave(newCreat) {
-        newCreat.wave = this.state.wave + 1;
-        newCreat.getCreatureToWaveLevel();
+    prepareCreatureForNewWave(newCreat, isPlayerCreature) {
+        newCreat.waveLevel = this.state.wave + 1;
+        if (isPlayerCreature) {
+            newCreat.levelUp();
+        } else {
+            newCreat.getCreatureToWaveLevel();
+        }
         newCreat.restoreAllValues();
         return newCreat;
     }
@@ -387,10 +394,10 @@ export class FightWavesScreen extends Component {
     setupNextWave() {
         // restore and update players values
         var newPlayer = this.state.playerCreature;
-        newPlayer = this.prepareCreatureForNewWave(newPlayer);
+        newPlayer = this.prepareCreatureForNewWave(newPlayer, true);
 
         var newEnemy = this.returnRandomCreature();
-        newEnemy = this.prepareCreatureForNewWave(newEnemy);
+        newEnemy = this.prepareCreatureForNewWave(newEnemy, false);
 
         this.setState({
             battlePhase: "playersTurn",
@@ -424,9 +431,9 @@ export class FightWavesScreen extends Component {
         this.resetCounter();
         this.toggleIsAttacking();
 
-        console.log(this.bothCreaturesAreAlive())
-        console.log(this.state.playerCreature)
-        console.log(this.state.enemyCreature)
+        console.log(this.bothCreaturesAreAlive());
+        console.log(this.state.playerCreature);
+        console.log(this.state.enemyCreature);
         if (this.bothCreaturesAreAlive()) {
             // gives time to show whats happening
             // might turn the timeout into a setting adjustable
@@ -438,7 +445,7 @@ export class FightWavesScreen extends Component {
                 });
                 this.conductBotActions();
             }, 2000);
-        }else{
+        } else {
             console.log("hey");
             this.roundResultAction();
         }
@@ -461,9 +468,9 @@ export class FightWavesScreen extends Component {
         this.applyDamage("player", this.enemyAtkDamage);
         this.resetCounter();
 
-        console.log(this.bothCreaturesAreAlive())
-        console.log(this.state.playerCreature)
-        console.log(this.state.enemyCreature)
+        console.log(this.bothCreaturesAreAlive());
+        console.log(this.state.playerCreature);
+        console.log(this.state.enemyCreature);
         if (this.bothCreaturesAreAlive()) {
             // gives time to show whats happening
             // might turn the timeout into a setting adjustable
