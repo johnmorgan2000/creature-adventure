@@ -4,7 +4,7 @@ class Creature {
         this.name = "Default";
 
         // health information
-        this.maxHealth = 1000;
+        this.maxHealth = 50;
         this.health = this.maxHealth;
 
         // mana information
@@ -33,18 +33,17 @@ class Creature {
     setHealth(newHealth) {
         if (newHealth < 0) {
             this.health = 0;
-        }else if (newHealth > this.maxHealth){
-            this.health = this.maxHealth
-        } 
-        else {
+        } else if (newHealth > this.maxHealth) {
+            this.health = this.maxHealth;
+        } else {
             this.health = newHealth;
         }
     }
 
     // end setters
 
-    isDead(){
-        if (this.health <=0){
+    isDead() {
+        if (this.health <= 0) {
             return true;
         }
         return false;
@@ -52,8 +51,10 @@ class Creature {
 
     getCreatureToWaveLevel() {
         var values = this.levelUpValues;
-        this.health = values.healthUp * this.waveLevel;
-        this.mana = values.manaUp * this.waveLevel;
+        for (let i = 1; i < this.waveLevel; i++) {
+            this.maxHealth += values.healthUp;
+            this.maxMana += values.manaUp;
+        }
     }
 
     restoreAllValues() {
@@ -65,8 +66,8 @@ class Creature {
     // levels the creature based on levelUpValues
     levelUp() {
         var values = this.levelUpValues;
-        this.health += values.healthUp;
-        this.mana += values.manaUp;
+        this.maxHealth += values.healthUp;
+        this.maxMana += values.manaUp;
     }
 }
 
