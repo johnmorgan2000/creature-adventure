@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { BattleLog } from "./BattleLog";
 import { HealthBar } from "./HealthBar";
+import { Meter } from "./Meter";
 // file search tags are here for me to navigate the file easier
 // and leave tags for coming back to later or finding a section of code
 
@@ -112,9 +113,10 @@ export class FightWavesScreen extends Component {
 
                 <div className="bottomMeterContainer">
                     <p>Attacking</p>
-                    <div className="attackMeter meter">
-                        <div className="meterPoint" ref={this.meterPointRef} />
-                    </div>
+                    <Meter
+                        className={"attackMeter meter"}
+                        counter={this.state.counter}
+                    />
 
                     <button
                         ref={this.meterStopperBtnRef}
@@ -170,12 +172,10 @@ export class FightWavesScreen extends Component {
 
                     <div className="bottomMeterContainer">
                         <p>Block</p>
-                        <div className="defendMeter meter">
-                            <div
-                                className="meterPoint"
-                                ref={this.meterPointRef}
-                            />
-                        </div>
+                        <Meter
+                            className={"defendMeter meter"}
+                            counter={this.state.counter}
+                        />
 
                         <button
                             ref={this.meterStopperBtnRef}
@@ -199,12 +199,20 @@ export class FightWavesScreen extends Component {
 
     // starts the meterTickInterval
     startTicker() {
-        this.meterTickInterval = setInterval(this.meterTickIntervalHandler, 10);
+        this.meterTickInterval = setInterval(
+            this.meterTickIntervalHandler,
+            this.focusToSpeed(this.state.playerCreature.focus)
+        );
     }
 
     // stops the meterTickInterval
     stopTicker() {
         clearInterval(this.meterTickInterval);
+    }
+
+    // turns creature focus to the a speed for an interval tick
+    focusToSpeed(focus) {
+        return focus / 10;
     }
 
     addToBattleLog(entry) {
@@ -434,9 +442,6 @@ export class FightWavesScreen extends Component {
         this.resetCounter();
         this.toggleIsAttacking();
 
-        console.log(this.bothCreaturesAreAlive());
-        console.log(this.state.playerCreature);
-        console.log(this.state.enemyCreature);
         if (this.bothCreaturesAreAlive()) {
             // gives time to show whats happening
             // might turn the timeout into a setting adjustable
@@ -471,9 +476,6 @@ export class FightWavesScreen extends Component {
         this.applyDamage("player", this.enemyAtkDamage);
         this.resetCounter();
 
-        console.log(this.bothCreaturesAreAlive());
-        console.log(this.state.playerCreature);
-        console.log(this.state.enemyCreature);
         if (this.bothCreaturesAreAlive()) {
             // gives time to show whats happening
             // might turn the timeout into a setting adjustable
@@ -503,9 +505,6 @@ export class FightWavesScreen extends Component {
                 counterDirection: this.state.counterDirection * -1
             });
         }
-
-        // moves the meter point
-        this.meterPointRef.current.style["left"] = this.state.counter + "%";
     }
     // --end handlers--
 
