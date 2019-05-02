@@ -330,17 +330,43 @@ export class FightWavesScreen extends Component {
         });
     }
 
+    takeAction(action, isPlayerTurn){
+        switch (action) {
+            case "baseAtk":
+                
+                break;
+            
+            default:
+                break;
+        }
+    }
+
+    baseAttack(isPlayerTurn){
+        if (isPlayerTurn) {
+            this.calculateBlockFromCounter("enemy");
+            this.getNewPlayerAttackDamage();
+            this.applyDamage(isPlayerTurn, this.playerAtkDamage);
+        } else {
+            this.calculateBlockFromCounter("player");
+            this.getNewEnemyAttackDamage();
+            this.setState({
+                displayDamageDone: true
+            });
+            this.applyDamage(isPlayerTurn, this.enemyAtkDamage);
+        }
+    }
+
     // sets the new creat obj by giving the method a string of
     // either "player" or "enemy" to apply given damage
-    applyDamage(strPlayerOrEnemy, damage) {
+    applyDamage(isPlayerTurn, damage) {
         var newCreat;
-        if (strPlayerOrEnemy === "player") {
+        if (!isPlayerTurn) {
             newCreat = this.state.playerCreature;
             newCreat.setHealth(newCreat.health - damage);
             this.setState({
                 playerCreature: newCreat
             });
-        } else if (strPlayerOrEnemy === "enemy") {
+        } else {
             newCreat = this.state.enemyCreature;
             newCreat.setHealth(newCreat.health - damage);
             this.setState({
@@ -389,9 +415,9 @@ export class FightWavesScreen extends Component {
         }
     }
 
-    prepareCreatureForNewWave(newCreat, isPlayerCreature) {
+    prepareCreatureForNewWave(newCreat, isPlayerTurn) {
         newCreat.waveLevel = this.state.wave + 1;
-        if (isPlayerCreature) {
+        if (isPlayerTurn) {
             newCreat.levelUp();
         } else {
             newCreat.getCreatureToWaveLevel();
@@ -430,14 +456,7 @@ export class FightWavesScreen extends Component {
         this.disabler();
         this.stopTicker();
 
-        this.calculateBlockFromCounter("enemy");
-        this.getNewPlayerAttackDamage();
-        this.setState({
-            displayDamageDone: true
-        });
-        this.stopTicker();
-
-        this.applyDamage("enemy", this.playerAtkDamage);
+        this.baseAttack(true)
 
         this.resetCounter();
         this.toggleIsAttacking();
@@ -466,14 +485,8 @@ export class FightWavesScreen extends Component {
         this.disabler();
         this.stopTicker();
 
-        this.calculateBlockFromCounter("player");
-        this.getNewEnemyAttackDamage();
-        this.setState({
-            displayDamageDone: true
-        });
+        this.baseAttack(false);
 
-        this.stopTicker();
-        this.applyDamage("player", this.enemyAtkDamage);
         this.resetCounter();
 
         if (this.bothCreaturesAreAlive()) {
