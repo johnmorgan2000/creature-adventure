@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { CREATS } from "../creatures";
 import { CreatureSelectScreen } from "./CreatureSelectScreen";
 import { FightWavesScreen } from "./FightWavesScreen";
+import { ResultScreen} from "./ResultScreen";
 
 // Component to contain the game happening inside the app
 // GameWindow will handle most of the game state and game play
@@ -13,10 +14,12 @@ export class GameWindow extends Component {
         this.state = {
             phase: "startMenu",
             playerCreatureId: 1,
-            creatureObj:  this.creatures[0].creatureObj
+            creatureObj:  this.creatures[0].creatureObj,
+            results: {}
         };
 
         this.changeGamePhase = this.changeGamePhase.bind(this);
+        this.setResults = this.setResults.bind(this);
         this.startBtnClickHandler = this.startBtnClickHandler.bind(this);
         this.toggleCreatureSelect = this.toggleCreatureSelect.bind(this);
         
@@ -30,6 +33,8 @@ export class GameWindow extends Component {
                 return this.returnCreatureSelectRender();
             case "fightWavesScreen":
                 return this.returnFightWavesRender();
+            case "resultScreen":
+                return this.returnResultScreenRender();
             // default for no matches if something were to happen
             default:
                 return (
@@ -45,6 +50,12 @@ export class GameWindow extends Component {
         this.setState({
             phase: stateName
         });
+    }
+
+    setResults(results){
+        this.setState({
+            results: results
+        })
     }
 
     // creates the starting menu render
@@ -84,7 +95,16 @@ export class GameWindow extends Component {
                     changeGamePhase={this.changeGamePhase} 
                     playerCreature={this.state.creatureObj} 
                     creatures={this.creatures}
+                    setResults={this.setResults}
                 />
+            </div>
+        )
+    }
+
+    returnResultScreenRender(){
+        return(
+            <div id="gameWindow">
+                <ResultScreen results={this.state.results}/>
             </div>
         )
     }
