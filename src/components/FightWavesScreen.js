@@ -524,7 +524,7 @@ export class FightWavesScreen extends Component {
                     battlePhase: "enemysTurn"
                 });
                 this.conductBotActions();
-            }, 2000);
+            }, 1000);
         } else {
             console.log("hey");
             this.roundResultAction();
@@ -553,7 +553,7 @@ export class FightWavesScreen extends Component {
                     battlePhase: "playersTurn"
                 });
                 this.toggleIsAttacking();
-            }, 2000);
+            }, 1000);
         } else {
             this.roundResultAction();
         }

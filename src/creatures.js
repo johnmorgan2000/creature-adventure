@@ -4,7 +4,7 @@ class Creature {
         this.name = "Default";
 
         // health information
-        this.maxHealth = 1000;
+        this.maxHealth = 50;
         this.health = this.maxHealth;
 
         // mana information
@@ -86,6 +86,8 @@ class BoulderBack extends Creature {
         super();
         this.name = "Boulder Back";
         this.imageSrc = "./images/boulder_back.png";
+        this.maxHealth = 1100;
+        this.health = this.maxHealth;
     }
 }
 
@@ -93,5 +95,11 @@ class BoulderBack extends Creature {
 export const CREATS = [
     { id: 1, creatureObj: new Creature() },
     { id: 2, creatureObj: new BoulderBack() },
-    { id: 3, creatureObj: new Creature() }
+    { id: 3, creatureObj: new Creature() },
+    { id: 4, creatureObj: new Creature() },
+    { id: 5, creatureObj: new Creature() },
+    { id: 6, creatureObj: new Creature() },
+    { id: 7, creatureObj: new Creature() },
+    { id: 8, creatureObj: new Creature() },
+    { id: 9, creatureObj: new Creature() }
 ];
