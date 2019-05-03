@@ -4,7 +4,7 @@ class Creature {
         this.name = "Default";
 
         // health information
-        this.maxHealth = 50;
+        this.maxHealth = 1000;
         this.health = this.maxHealth;
 
         // mana information
@@ -15,9 +15,17 @@ class Creature {
         this.baseFocus = 70;
         this.focus = this.baseFocus;
         this.maxFocus = 100;
-        this.minFocus = 20;
+        this.minFocus = 40;
 
-        this.element = "no element";
+        // elemental information
+        this.elementInformation = {
+            type: "none",
+            strongAgainst: "none",
+            weakAgainst: "none",
+            hasEffects: false
+        };
+
+        // other information
         this.attackDmg = 100;
         this.imageSrc = "./images/default.png";
         this.waveLevel = 1;
@@ -42,6 +50,8 @@ class Creature {
 
     // end setters
 
+    // determines if the creature is dead
+    // returns a boolean
     isDead() {
         if (this.health <= 0) {
             return true;
@@ -75,10 +85,7 @@ class BoulderBack extends Creature {
     constructor() {
         super();
         this.name = "Boulder Back";
-    }
-
-    copy() {
-        return new BoulderBack();
+        this.imageSrc = "./images/boulder_back.png";
     }
 }
 

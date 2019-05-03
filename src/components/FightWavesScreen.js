@@ -48,6 +48,7 @@ export class FightWavesScreen extends Component {
             creature: this.state.playerCreature.name,
             waves: this.state.wave
         };
+        this.action = null;
 
         // bindings
         this.meterTickIntervalHandler = this.meterTickIntervalHandler.bind(
@@ -84,7 +85,9 @@ export class FightWavesScreen extends Component {
                     />
                     <p>{this.state.playerCreature.name}</p>
 
-                    <img src={this.state.playerCreature.imageSrc} alt="" />
+                    <div className="imageContainer">
+                        <img src={this.state.playerCreature.imageSrc} alt="" />
+                    </div>
                 </div>
 
                 <div className="displayBlock enemy">
@@ -94,7 +97,9 @@ export class FightWavesScreen extends Component {
                         maxHealth={this.state.enemyCreature.maxHealth}
                     />
                     <p>{this.state.enemyCreature.name}</p>
-                    <img src={this.state.enemyCreature.imageSrc} alt="" />
+                    <div className="imageContainer">
+                        <img src={this.state.enemyCreature.imageSrc} alt="" />
+                    </div>
                 </div>
             </div>
         );
@@ -109,18 +114,19 @@ export class FightWavesScreen extends Component {
                 </div>
                 {this.creatureDisplayBlock()}
 
-                <BattleLog battleLog={this.state.battleLog} />
+                {/* <BattleLog battleLog={this.state.battleLog} /> */}
 
-                <div className="bottomMeterContainer">
-                    <p>Attacking</p>
+                <div className="bottomMeterContainer bottomOptionsBar">
+                    <p className="meterText">Attacking</p>
                     <Meter
                         className={"attackMeter meter"}
                         counter={this.state.counter}
                     />
 
                     <button
+                        className="meterStopBtn"
                         ref={this.meterStopperBtnRef}
-                        onClick={() => this.hitBtnClickHandler()}
+                        onClick={() => this.hitBtnClickHandler(this.action)}
                     >
                         Stop
                     </button>
@@ -150,9 +156,18 @@ export class FightWavesScreen extends Component {
 
                 {this.creatureDisplayBlock()}
 
-                <div id="bottomOptionsBar">
-                    <button onClick={() => this.baseAtkClickHandler()}>
+                <div className="bottomOptionsBar">
+                    <button
+                        className="actionBtn"
+                        onClick={() => this.actionClickHandler("baseAtk")}
+                    >
                         Base Attack
+                    </button>
+                    <button
+                        className="actionBtn"
+                        onClick={() => this.actionClickHandler("elementalAtk")}
+                    >
+                        Elemental Attack
                     </button>
                 </div>
             </div>
@@ -168,16 +183,17 @@ export class FightWavesScreen extends Component {
                     </div>
                     {this.creatureDisplayBlock()}
 
-                    <BattleLog battleLog={this.state.battleLog} />
+                    {/* <BattleLog battleLog={this.state.battleLog} /> */}
 
-                    <div className="bottomMeterContainer">
-                        <p>Block</p>
+                    <div className="bottomMeterContainer bottomOptionsBar">
+                        <p className="meterText">Block</p>
                         <Meter
                             className={"defendMeter meter"}
                             counter={this.state.counter}
                         />
 
                         <button
+                            className="meterStopBtn"
                             ref={this.meterStopperBtnRef}
                             onClick={() => this.blockBtnClickHandler()}
                         >
@@ -269,7 +285,6 @@ export class FightWavesScreen extends Component {
             var counter = this.state.counter;
             var playerDamage = this.state.playerCreature.attackDmg;
             this.playerAtkDamage = Math.floor(playerDamage * (counter / 100));
-            this.addToBattleLog("You attacked for " + this.playerAtkDamage);
         } else {
             this.playerAtkDamage = 0;
             this.addToBattleLog("Your attack was blocked");
@@ -283,9 +298,6 @@ export class FightWavesScreen extends Component {
             var counter = this.randomEnemyCounter();
             var enemyDamage = this.state.enemyCreature.attackDmg;
             this.enemyAtkDamage = Math.floor(enemyDamage * (counter / 100));
-            this.addToBattleLog(
-                "Your Opponent attacked for " + this.enemyAtkDamage
-            );
         } else {
             this.enemyAtkDamage = 0;
             this.addToBattleLog("You blocked the attack");
@@ -330,18 +342,21 @@ export class FightWavesScreen extends Component {
         });
     }
 
-    takeAction(action, isPlayerTurn){
+    // determines what action should take place
+    takeAction(action, isPlayerTurn) {
         switch (action) {
             case "baseAtk":
-                
+                this.baseAttack(isPlayerTurn);
                 break;
-            
+            case "elementalAtk":
+                this.elementalAttack(isPlayerTurn);
+                break;
             default:
                 break;
         }
     }
 
-    baseAttack(isPlayerTurn){
+    baseAttack(isPlayerTurn) {
         if (isPlayerTurn) {
             this.calculateBlockFromCounter("enemy");
             this.getNewPlayerAttackDamage();
@@ -349,10 +364,43 @@ export class FightWavesScreen extends Component {
         } else {
             this.calculateBlockFromCounter("player");
             this.getNewEnemyAttackDamage();
-            this.setState({
-                displayDamageDone: true
-            });
             this.applyDamage(isPlayerTurn, this.enemyAtkDamage);
+        }
+    }
+
+    elementalAttack(isPlayerTurn) {
+        if (isPlayerTurn) {
+            this.calculateBlockFromCounter("enemy");
+            this.getNewPlayerAttackDamage();
+            this.playerAtkDamage = this.elementDamageAlteration(
+                this.state.playerCreature,
+                this.state.enemyCreature,
+                this.playerAtkDamage
+            );
+            this.applyDamage(isPlayerTurn, this.playerAtkDamage);
+        } else {
+            this.calculateBlockFromCounter("player");
+            this.getNewEnemyAttackDamage();
+            this.enemyAtkDamage = this.elementDamageAlteration(
+                this.state.enemyCreature,
+                this.state.playerCreature,
+                this.enemyAtkDamage
+            );
+            this.applyDamage(isPlayerTurn, this.enemyAtkDamage);
+        }
+    }
+
+    elementDamageAlteration(creat, targetCreat, damage) {
+        var creatElementInfo = creat.elementInformation;
+        var targetElementInfo = targetCreat.elementInformation;
+        if (creatElementInfo.strongAgainst === targetElementInfo.weakAgainst) {
+            return (damage += damage * 0.5);
+        } else if (
+            creatElementInfo.weakAgainst === targetElementInfo.strongAgainst
+        ) {
+            return (damage -= damage * 0.2);
+        } else {
+            return damage;
         }
     }
 
@@ -360,18 +408,22 @@ export class FightWavesScreen extends Component {
     // either "player" or "enemy" to apply given damage
     applyDamage(isPlayerTurn, damage) {
         var newCreat;
-        if (!isPlayerTurn) {
+        if (isPlayerTurn === false) {
             newCreat = this.state.playerCreature;
             newCreat.setHealth(newCreat.health - damage);
             this.setState({
                 playerCreature: newCreat
             });
+            this.addToBattleLog("You attacked for " + this.playerAtkDamage);
         } else {
             newCreat = this.state.enemyCreature;
             newCreat.setHealth(newCreat.health - damage);
             this.setState({
                 enemyCreature: newCreat
             });
+            this.addToBattleLog(
+                "Your Opponent attacked for " + this.enemyAtkDamage
+            );
         }
     }
 
@@ -382,12 +434,6 @@ export class FightWavesScreen extends Component {
             this.toggleIsAttacking();
             this.startTicker();
         }
-    }
-
-    // -file search tag- handlers
-    baseAtkClickHandler() {
-        this.changeToAttackPhase();
-        this.startTicker();
     }
 
     // adds disabled to the element to the stopper btn
@@ -449,14 +495,21 @@ export class FightWavesScreen extends Component {
         this.playThroughStats.waves += 1;
     }
 
+    // -file search tag- handlers
+    actionClickHandler(action) {
+        this.changeToAttackPhase();
+        this.action = action;
+        this.startTicker();
+    }
+
     // handles the series of actions to happen after the character hits
     // sorry for the sloppiness, plan to clean it up if time allows
     // -file search tag- clean
-    hitBtnClickHandler() {
+    hitBtnClickHandler(action) {
         this.disabler();
         this.stopTicker();
 
-        this.baseAttack(true)
+        this.takeAction(action, true);
 
         this.resetCounter();
         this.toggleIsAttacking();

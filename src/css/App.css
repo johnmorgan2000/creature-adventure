@@ -1,41 +1,341 @@
-/* GameWindow component styling */
-#gameWindow{
-  border: 1px solid black;
-  width: 600px;
-  height: 400px;
-  margin: 0 auto; 
+:root {
+    --app-background: #d6d6d6;
+    --game-frame: #edbd56;
+    --game-base-color: #d4e5ff;
+    --game-base-blue: rgb(146, 215, 255);
+    --game-base-red: #a50000;
+    --game-base-grey: #e8e8e7;
+    --game-base-black: #3b3e45;
+}
 
-  /* GameWindow background styling */
-  /* background-image: url("/images/field.jpeg");
+#app {
+    padding-top: 50px;
+}
+
+body {
+    background-color: var(--app-background);
+}
+
+/* GameWindow component styling */
+#gameWindow {
+    border: 10px groove var(--game-frame);
+    width: 600px;
+    height: 500px;
+    margin: 0 auto;
+    background-color: var(--game-base-color);
+    background-image: url("/images/red_mountain.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    /* GameWindow background styling */
+    /* background-image: url("/images/field.jpeg");
   background-repeat: no-repeat;
   background-size: cover; */
 }
 
-#gameWindow p.startMenu{
-  text-align: center;
+#gameWindow div.startMenu img {
+    display: block;
+    margin: auto;
+    width: 70%;
+    height: 50px;
 }
 
+#gameWindow div.startMenu.buttonContainer {
+    width: 250px;
+    margin: auto;
+    margin-top: 30px;
+    padding: 15px;
+    background-color: white;
+}
 
 /* Game Window start menu buttons */
 #gameWindow button.startMenu {
-  display: block;
-  padding: 6px;
-  width: 120px;
-  margin: 0 auto;
-  margin-bottom: 5px;
+    display: block;
+    padding: 6px;
+    width: 250px;
+    height: 70px;
+    margin: 0 auto;
+    margin-bottom: 10px;
+    border: 1px solid var(--game-frame);
+    border-radius: 5px;
 }
 
+/* CreatureSelectScreen Component styling */
+#creatureSelectScreen {
+    color: white;
+    position: relative;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("/images/select_screen_background.jpeg");
+}
+
+#creatureSelectBar button.doneBtn {
+    display: block;
+    width: 300px;
+    font-size: 1.1rem;
+    margin: 0 auto;
+    background-color: var(--game-base-grey);
+    color: var(--game-base-red);
+    /* z-index: 1; */
+    position: relative;
+    bottom: -16%;
+    font-weight: bold;
+    border: none;
+    height: 31px;
+}
+
+#creatureSelectBar button.doneBtn:hover {
+    border-right: 3px solid var(--game-base-red);
+    border-top: 3px solid var(--game-base-red);
+    border-left: 3px solid var(--game-base-red);
+}
+/* CreatureSelectBar Component styling */
+#creatureSelectBar {
+    color: black;
+    padding: 4px;
+    background-image: url("/images/select_bar_background.png");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    display: block;
+
+    position: absolute;
+    width: 98.7%;
+    height: 120px;
+    bottom: 0px;
+}
 
 /* CreatureSelector  Component styling */
 div.creatureSelect {
-  display: inline-block;
-  margin:2px;
-  width: 55px;
-  height: 55px;
-  border: 1px solid black;
+    display: inline-block;
+    position: relative;
+    bottom: 0px;
+    background-color: rgb(194, 193, 193);
+    margin: 4px;
+    margin-top: 4.5%;
+    width: 55px;
+    height: 55px;
 }
 
+div.creatureSelect img {
+    width: 100%;
+}
+
+div.activeCover {
+    display: none;
+}
+
+div.creatureSelect.active div.activeCover {
+    display: block;
+    position: absolute;
+    top: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.596);
+}
+
+div.activeCoin {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    margin: auto;
+    margin-top: 12px;
+    background-color: rgb(255, 5, 5);
+}
 
 div.creatureSelect.active {
-  border: 2px solid lightblue;
+    border: 3px solid rgb(225, 225, 235);
+}
+
+/* CreatureSelectDisplay Component styling */
+#creatureSelectDisplay {
+    padding: 10px;
+    height: 300px;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* #creatureSelectDisplay div.creatureSelectDisplay.name p {
+    margin: 0;
+} */
+
+#creatureSelectDisplay div.creatureDisplayImgContainer {
+    width: 300px;
+    height: 200px;
+    display: inline-block;
+}
+
+#creatureSelectDisplay img.creatureDisplayImg {
+    width: 100%;
+}
+
+div.creatureSelectDisplay.infoContainer {
+    display: inline-block;
+    padding-left: 8px;
+    width: 300px;
+    height: 100%;
+    margin-left: 10px;
+    position: relative;
+    background-color: var(--game-base-black);
+    overflow: scroll;
+}
+
+div.creatureSelectDisplay.infoContainer p.name,
+p.meterText {
+    display: block;
+    width: 100%;
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+/* Display block during battle */
+div.creatureDisplayBlock {
+    width: 100%;
+    height: 325.5px;
+    display: flex;
+    justify-content: space-around;
+}
+
+div.displayBlock {
+    text-align: center;
+    padding: 5px;
+    width: 45%;
+    height: 250px;
+}
+
+div.displayBlock div.imageContainer {
+    display: block;
+    height: 65%;
+    margin: 0 auto;
+}
+
+div.displayBlock div.imageContainer img {
+    height: 100%;
+}
+
+div.displayBlock.enemy img {
+    transform: scaleX(-1);
+}
+
+/* the round banner  */
+
+div.roundBanner {
+    margin: 0 auto;
+    width: 300px;
+    height: 50px;
+    background-image: url("/images/banner.png");
+    background-repeat: no-repeat;
+    background-position-y: -6.5px;
+    background-size: 100% 60px;
+    padding-bottom: 2px;
+}
+
+div.roundBanner p {
+    margin: 0;
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    color: white;
+    line-height: 50px;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+/* Attack meter from attack phase */
+.meter {
+    width: 75%;
+    height: 25px;
+    margin: 0 auto;
+    padding-right: 5px;
+    border: 1px solid white;
+    background-color: white;
+}
+
+.meterPoint {
+    position: relative;
+    left: 0%;
+    height: 93%;
+    background-color: black;
+    width: 5px;
+    border: 1px solid black;
+    box-sizing: border-box;
+    margin: 1px;
+}
+
+/* health bar styling */
+div.healthBar {
+    width: 100%;
+    height: 15px;
+    background-color: rgb(0, 0, 0);
+}
+
+div.healthBar div.progress {
+    height: 100%;
+    width: 100%;
+    background-color: rgb(5, 255, 5);
+}
+
+#fightWavesScreen {
+    background-image: url("/images/fight_background.jpeg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 100%;
+    height: 100%;
+}
+
+#fightWavesScreen div.bottomBar {
+    width: 600px;
+    height: 150px;
+    position: absolute;
+    bottom: 12.5%;
+    background-image: url("/images/fight_background_banner.png");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+div.bottomOptionsBar {
+    width: 100%;
+    height: 120px;
+    background-color: var(--game-base-black);
+    border-top: 2px solid var(--game-base-red);
+    color: white;
+}
+
+button.actionBtn {
+    width: 200px;
+    height: 50px;
+    margin-top: 6%;
+    margin-right: 41px;
+    margin-left: 41px;
+    border: 1px solid var(--game-base-red);
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+button.actionBtn:hover {
+    background-color: var(--game-base-red);
+    color: white;
+}
+
+p.meterText {
+    margin-bottom: 10px;
+}
+
+div.bottomOptionsBar button.meterStopBtn {
+    width: 200px;
+    height: 45px;
+    display: block;
+    margin: 5px auto;
+    border: 1px solid var(--game-base-red);
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+div.bottomOptionsBar button.meterStopBtn:hover {
+    background-color: var(--game-base-red);
+    color: white;
 }

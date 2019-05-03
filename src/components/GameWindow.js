@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { CREATS } from "../creatures";
 import { CreatureSelectScreen } from "./CreatureSelectScreen";
 import { FightWavesScreen } from "./FightWavesScreen";
-import { ResultScreen} from "./ResultScreen";
+import { ResultScreen } from "./ResultScreen";
 
 // Component to contain the game happening inside the app
 // GameWindow will handle most of the game state and game play
@@ -14,7 +14,7 @@ export class GameWindow extends Component {
         this.state = {
             phase: "startMenu",
             playerCreatureId: 1,
-            creatureObj:  this.creatures[0].creatureObj,
+            creatureObj: this.creatures[0].creatureObj,
             results: {}
         };
 
@@ -22,7 +22,6 @@ export class GameWindow extends Component {
         this.setResults = this.setResults.bind(this);
         this.startBtnClickHandler = this.startBtnClickHandler.bind(this);
         this.toggleCreatureSelect = this.toggleCreatureSelect.bind(this);
-        
     }
     render() {
         switch (this.state.phase) {
@@ -52,24 +51,27 @@ export class GameWindow extends Component {
         });
     }
 
-    setResults(results){
+    setResults(results) {
         this.setState({
             results: results
-        })
+        });
     }
 
     // creates the starting menu render
     returnStartMenuRender() {
         return (
             <div id="gameWindow">
-                <p className="startMenu title">Game Name or Something</p>
-                <button
-                    onClick={this.startBtnClickHandler}
-                    className="startMenu mainBtn"
-                >
-                    Start
-                </button>
-                <button className="startMenu mainBtn">Help</button>
+                <div className="startMenu title">
+                    <img src="/images/title.png" alt="" />
+                </div>
+                <div className="startMenu buttonContainer">
+                    <button
+                        onClick={this.startBtnClickHandler}
+                        className="startMenu mainBtn"
+                    >
+                        Start
+                    </button>
+                </div>
             </div>
         );
     }
@@ -88,33 +90,32 @@ export class GameWindow extends Component {
         );
     }
 
-    returnFightWavesRender(){
-        return(
+    returnFightWavesRender() {
+        return (
             <div id="gameWindow">
-                <FightWavesScreen 
-                    changeGamePhase={this.changeGamePhase} 
-                    playerCreature={this.state.creatureObj} 
+                <FightWavesScreen
+                    changeGamePhase={this.changeGamePhase}
+                    playerCreature={this.state.creatureObj}
                     creatures={this.creatures}
                     setResults={this.setResults}
                 />
             </div>
-        )
+        );
     }
 
-    returnResultScreenRender(){
-        return(
+    returnResultScreenRender() {
+        return (
             <div id="gameWindow">
-                <ResultScreen results={this.state.results}/>
+                <ResultScreen results={this.state.results} />
             </div>
-        )
+        );
     }
 
-    
     // changes the state of playerCreatureId and creatureObj
     toggleCreatureSelect(id, creatureObj) {
         this.setState({
             playerCreatureId: id,
-            creatureObj:  creatureObj
+            creatureObj: creatureObj
         });
     }
 

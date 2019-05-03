@@ -2,20 +2,20 @@ import React, { Component } from "react";
 
 // the selected component in the CreatureSelect bar
 export class CreatureSelector extends Component {
-
-    render(){
+    render() {
         var className;
-        if(this.props.playerCreatureId === this.props.id){
+        if (this.props.playerCreatureId === this.props.id) {
             className = "creatureSelect active";
-        }else{
+        } else {
             className = "creatureSelect";
         }
-        return(
+        return (
             <div className={className} onClick={this.props.onClick}>
-                creat
+                <img src={this.props.creatureObj.imageSrc} />
+                <div className="activeCover">
+                    <div className="activeCoin" />
+                </div>
             </div>
-        )
+        );
     }
-
-    
 }

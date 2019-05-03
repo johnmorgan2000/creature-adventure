@@ -1,23 +1,20 @@
-import React, { Component } from 'react';
-import {GameWindow} from './GameWindow';
+import React, { Component } from "react";
+import { GameWindow } from "./GameWindow";
 
-import '../css/App.css';
+import "../css/App.css";
 
 class App extends Component {
-
-
-  render() {
-    return (
-      <div>
-        <header>
+    render() {
+        return (
+            <div id="app">
+                {/* <header>
           Application
-        </header>
+        </header> */}
 
-        <GameWindow />
-
-      </div>
-    );
-  }
+                <GameWindow />
+            </div>
+        );
+    }
 }
 
 export default App;
